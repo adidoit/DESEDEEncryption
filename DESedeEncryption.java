@@ -10,15 +10,15 @@ public class DESedeEncryption {
  
     private static final String UNICODE_FORMAT = "UTF8";
     public static final String DESEDE_ENCRYPTION_SCHEME = "DESede";
-    private KeySpec myKeySpec;
-    private SecretKeyFactory mySecretKeyFactory;
-    private Cipher cipher;
-    byte[] keyAsBytes;
-    private String myEncryptionKey;
-    private String myEncryptionScheme;
-    SecretKey key;
+    private static KeySpec myKeySpec;
+    private static SecretKeyFactory mySecretKeyFactory;
+    private static Cipher cipher;
+    public static byte[] keyAsBytes;
+    private static String myEncryptionKey;
+    private static String myEncryptionScheme;
+    public static SecretKey key;
  
-    public DESedeEncryption() throws Exception
+ /*   public DESedeEncryption() throws Exception
     {
         myEncryptionKey = "ThisIsSecretEncryptionKey";
         myEncryptionScheme = DESEDE_ENCRYPTION_SCHEME;
@@ -28,13 +28,21 @@ public class DESedeEncryption {
         cipher = Cipher.getInstance(myEncryptionScheme);
         key = mySecretKeyFactory.generateSecret(myKeySpec);
     }
- 
+ */
     /**
      * Method To Encrypt The String
      */
-    public String encrypt(String unencryptedString) {
+    public static String encrypt(String unencryptedString) {
         String encryptedString = null;
         try {
+		    myEncryptionKey = "ThisIsSecretEncryptionKey";
+			myEncryptionScheme = DESEDE_ENCRYPTION_SCHEME;
+			keyAsBytes = myEncryptionKey.getBytes(UNICODE_FORMAT);
+			myKeySpec = new DESedeKeySpec(keyAsBytes);
+			mySecretKeyFactory = SecretKeyFactory.getInstance(myEncryptionScheme);
+			cipher = Cipher.getInstance(myEncryptionScheme);
+			key = mySecretKeyFactory.generateSecret(myKeySpec);				
+		
             cipher.init(Cipher.ENCRYPT_MODE, key);
             byte[] plainText = unencryptedString.getBytes(UNICODE_FORMAT);
             byte[] encryptedText = cipher.doFinal(plainText);
@@ -48,9 +56,17 @@ public class DESedeEncryption {
     /**
      * Method To Decrypt An Ecrypted String
      */
-    public String decrypt(String encryptedString) {
+    public static String decrypt(String encryptedString) {
         String decryptedText=null;
         try {
+		    myEncryptionKey = "ThisIsSecretEncryptionKey";
+			myEncryptionScheme = DESEDE_ENCRYPTION_SCHEME;
+			keyAsBytes = myEncryptionKey.getBytes(UNICODE_FORMAT);
+			myKeySpec = new DESedeKeySpec(keyAsBytes);
+			mySecretKeyFactory = SecretKeyFactory.getInstance(myEncryptionScheme);
+			cipher = Cipher.getInstance(myEncryptionScheme);
+			key = mySecretKeyFactory.generateSecret(myKeySpec);
+		
             cipher.init(Cipher.DECRYPT_MODE, key);
             BASE64Decoder base64decoder = new BASE64Decoder();
             byte[] encryptedText = base64decoder.decodeBuffer(encryptedString);
@@ -77,11 +93,11 @@ public class DESedeEncryption {
      */
     public static void main(String args []) throws Exception
     {
-        DESedeEncryption myEncryptor= new DESedeEncryption();
+       // DESedeEncryption myEncryptor= new DESedeEncryption();
  
         String stringToEncrypt= "aditest";
-        String encrypted=myEncryptor.encrypt(stringToEncrypt);
-        String decrypted=myEncryptor.decrypt(encrypted);
+        String encrypted=encrypt(stringToEncrypt);
+        String decrypted=decrypt(encrypted);
  
         System.out.println("String To Encrypt: "+stringToEncrypt);
         System.out.println("Encrypted Value :" + encrypted);
